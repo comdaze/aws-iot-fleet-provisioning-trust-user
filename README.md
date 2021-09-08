@@ -69,11 +69,11 @@ Would you like to do that now? [y/N]: y
 
 选择可以连接Internet的WiFi热点：
 
-![WiFI_Setup_2](/pics/WiFi_Setup_2.PNG "WiFI_Setup_2")
+![WiFI_Setup_2](/pics/WiFi_Setup_2.jpeg "WiFI_Setup_2")
 
 输入密码，点击提交，此时已经给树莓派设置好了WiFi，树莓派会自动重启
 
-![WiFI_Setup_3](/pics/WiFi_Setup_3.PNG "WiFI_Setup_3")
+![WiFI_Setup_3](/pics/WiFi_Setup_3.jpeg "WiFI_Setup_3")
 
 此时看到树莓派已经连接了刚才设置好的可以连接internet的WiFi热点
 
