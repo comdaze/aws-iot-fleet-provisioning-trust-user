@@ -78,3 +78,22 @@ Would you like to do that now? [y/N]: y
 此时看到树莓派已经连接了刚才设置好的可以连接internet的WiFi热点
 
 ## 基于可信用户的IoT设备注册
+aws iot create-provisioning-template \
+        --template-name TrustedUserProvisioningTemplate \
+        --provisioning-role-arn arn:aws-cn:iam::456370280007:role/service-role/IoTFleetProvisioningRole \
+        --template-body file://template.json \
+        --enabled 
+
+aws iot create-provisioning-claim \
+        --template-name TrustedUserProvisioningTemplate \
+        | python3 ./utils/parse_cert_set_result.py \
+        --path ./certs \
+        --filename provision
+        
+python3 fleetprovisioning.py \
+        --endpoint a2jtec7plm36gl.ats.iot.cn-north-1.amazonaws.com.cn \
+        --root-ca ./certs/root.ca.pem \
+        --cert ./certs/provision.cert.pem \
+        --key ./certs/provision.private.key \
+        --templateName TrustedUserProvisioningTemplate \
+        --templateParameters "{\"SerialNumber\":\"1\",\"DeviceLocation\":\"Seattle\"}"

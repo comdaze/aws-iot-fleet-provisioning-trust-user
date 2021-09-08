@@ -17,7 +17,7 @@ def main():
         print(addr)
         recvdata = conn.recv(buffer_size)
 
-        with open("/Users/zhihay/workspace/aws-iot-fleet-provisioning-trust-user/index.html","rb") as f:
+        with open("./index.html","rb") as f:
              data = f.read()
              conn.sendall(bytes("HTTP/1.1 201 OK\r\n\r\n", "utf-8"))  
              conn.sendall(data)
