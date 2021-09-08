@@ -57,7 +57,7 @@ Would you like to do that now? [y/N]: y
 
 打开手机无线局域网设置，可以看到“RaspiWiFi Setup”热点：
 
-![WiFi HotPoint](/pics/hotpoint.jpeg "WiFi HotPoint")
+![WiFi HotPoint](/pics/Hotpoint.jpeg "WiFi HotPoint")
 
 查看热点路由器的IP地址：
 
