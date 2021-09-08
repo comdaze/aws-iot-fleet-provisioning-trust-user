@@ -66,3 +66,5 @@ Would you like to do that now? [y/N]: y
 输入密码，点击提交，此时已经给树莓派设置好了WiFi，树莓派会自动重启
 ![WiFI_Setup_3](/pics/WiFI_Setup_3.png "WiFI_Setup_3")
 此时看到树莓派已经连接了刚才设置好的可以连接internet的WiFi热点
+
+## 基于可信用户的IoT设备注册
