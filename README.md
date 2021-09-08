@@ -56,15 +56,25 @@ Would you like to do that now? [y/N]: y
 此时机器自动重启
 
 打开手机无线局域网设置，可以看到“RaspiWiFi Setup”热点：
+
 ![WiFi HotPoint](/pics/hotpoint.jpg "WiFi HotPoint")
+
 查看热点路由器的IP地址：
+
 ![Router_IP](/pics/Router_IP.jpg "Router_IP")
+
 打开手机浏览器输入：http://10.0.0.1 ,可以看到WiFi Setup设置界面
-![WiFI_Setup_1](/pics/WiFI_Setup_1.png "WiFI_Setup_1")
+
+![WiFI_Setup_1](/pics/WiFI_Setup_1.PNG "WiFI_Setup_1")
+
 选择可以连接Internet的WiFi热点：
-![WiFI_Setup_2](/pics/WiFI_Setup_2.png "WiFI_Setup_2")
+
+![WiFI_Setup_2](/pics/WiFI_Setup_2.PNG "WiFI_Setup_2")
+
 输入密码，点击提交，此时已经给树莓派设置好了WiFi，树莓派会自动重启
-![WiFI_Setup_3](/pics/WiFI_Setup_3.png "WiFI_Setup_3")
+
+![WiFI_Setup_3](/pics/WiFI_Setup_3.PNG "WiFI_Setup_3")
+
 此时看到树莓派已经连接了刚才设置好的可以连接internet的WiFi热点
 
 ## 基于可信用户的IoT设备注册
