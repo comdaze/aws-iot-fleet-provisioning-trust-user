@@ -57,11 +57,11 @@ Would you like to do that now? [y/N]: y
 
 打开手机无线局域网设置，可以看到“RaspiWiFi Setup”热点：
 
-![WiFi HotPoint](/pics/hotpoint.jpg "WiFi HotPoint")
+![WiFi HotPoint](/pics/hotpoint.jpeg "WiFi HotPoint")
 
 查看热点路由器的IP地址：
 
-![Router_IP](/pics/Router_IP.jpg "Router_IP")
+![Router_IP](/pics/Router_IP.jpeg "Router_IP")
 
 打开手机浏览器输入：http://10.0.0.1 ,可以看到WiFi Setup设置界面
 
