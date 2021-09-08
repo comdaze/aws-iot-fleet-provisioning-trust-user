@@ -65,7 +65,7 @@ Would you like to do that now? [y/N]: y
 
 打开手机浏览器输入：http://10.0.0.1 ,可以看到WiFi Setup设置界面
 
-![WiFI_Setup_1](/pics/WiFi_Setup_1.PNG "WiFI_Setup_1")
+![WiFI_Setup_1](/pics/WiFi_Setup_1.jpeg "WiFI_Setup_1")
 
 选择可以连接Internet的WiFi热点：
 
