@@ -83,12 +83,15 @@ AWS提供了几种不同的方式来配置设备并在上面安装证书。可�
 本项目重点讨论 "由受信任的用户队列预置 "这一选项。当需要高度的安全性时，当制造供应链不被信任时，或者由于技术限制、成本或应用的具体限制，不可能在制造供应链中配置设备时，建议采用 "受信任用户的队列预置"的方式。使用这种方法，凭证永远不会暴露在制造供应链中。请阅读[这里](https://docs.aws.amazon.com/iot/latest/developerguide/provision-wo-cert.html)了解更多细节。
 ### 基本流程
 安装者使用他编写和拥有的移动/Web应用，并与AWS进行认证。使用受信任的（认证的）用户API，安装者收到一个临时的X.509证书和私钥，有效期为5分钟。使用移动/网络应用，证书被传递给设备。设备连接到AWS IoT，并将临时凭证换成由AWS CA签署的唯一X.509证书和私钥。在这个工作流程中，AWS资源包括Thing名称、策略和证书都在AWS账户中设置。
+
 ![fp_by_trasted_user_flow](./pics/fp_by_trasted_user_flow.png "fp_by_trasted_user_flow")
 ### 用户认证系统部署
 移动或者Web应用的用户认证可以采用Amazon Cognito User Pool或者其他认证服务，在这里我们采用开源用户认证系统[Keycloak](https://www.keycloak.org/),在AWS云上自动化部署请参考[Keycloak-on-AWS](https://github.com/aws-samples/keycloak-on-aws)。
 
 移动/Web用户通过Keycloak认证登录后拿到Access Token，通过和Amazon Cognito Identity Pools集成，获得AWS的服务访问凭证Access Key和Securt Key，过程示意图如下：
+
 ![amazon-cognito-ext-auth-enhanced-flow](./pics/amazon-cognito-ext-auth-enhanced-flow.png "amazon-cognito-ext-auth-enhanced-flow")
+
 Keycloak和Amazon Cognito Identity Pools集成配置请参见[部署向导](https://github.com/aws-samples/keycloak-on-aws/blob/master/doc/DEPLOYMENT_GUIDE.md)最后一部分。
 
 ### AWS IoT策略
@@ -141,21 +144,34 @@ IoT策略包括允许设备连接到AWS物联网核心消息代理，发送和�
 
 在AWS IoT控制台，导航到 "Onboard"，"Fleet provisioning templates"。
 点击'创建模板',点击'开始':
+
 ![create_provising_template_start](./pics/create_provising_template_start.png "create_provising_template_start")
+
 模板名称：TrustedUserProvisioningTemplate
-在'供应角色'下点击'创建角色'，并命名为'IoTFleetProvisioningRole',勾选‘使用Amazon IoT注册表来管理您的设备队列’
+在'供应角色'下点击'创建角色'，并命名为'IoTFleetProvisioningRole',勾选‘使用Amazon IoT注册表来管理您的设备队列’,
+
 ![create_provising_template_step1](./pics/create_provising_template_step1.png "create_provising_template_step1")
+
 点击'下一步'。
 选择'使用现有的AWS IoT策略'并选择之前创建的'pubsub'。
 点击'创建模板'。
+
 ![create_provising_template_step2](./pics/create_provising_template_step2.png "create_provising_template_step2")
+
 填写物品名称前缀：‘mything_’, 可选选择物品类型以及组，点击‘创建模版’，
+
 ![create_provising_template_step3](./pics/create_provising_template_step3.png "create_provising_template_step3")
+
 保持此页面默认设置，
+
 ![create_provising_template_step4](./pics/create_provising_template_step4.png "create_provising_template_step4")
+
 点击页面底部的'启用模板'，
+
 ![create_provising_template_step5](./pics/create_provising_template_step4.png "create_provising_template_step5")
+
 导航到‘队列预置模版’，选择创建的模板‘TrustedUserProvisioningTemplate’，可以看到模版JSON的内容，可以根据需求点击'Edit JSON'，修改模版。
+
 ![create_provising_template_end](./pics/create_provising_template_end.png "create_provising_template_end")
 
 如果用命令行执行如下：
