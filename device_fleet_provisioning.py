@@ -386,4 +386,4 @@ fleet_provisioning(
 
 
 
-os.system('python3 pubsub.py --endpoint a2jtec7plm36gl.ats.iot.cn-north-1.amazonaws.com.cn --root-ca ./certs/root.ca.pem --key  ./certs/long-term.private.key --cert ./certs/long-term.cert.pem')
+#os.system('python3 pubsub.py --endpoint a2jtec7plm36gl.ats.iot.cn-north-1.amazonaws.com.cn --root-ca ./certs/root.ca.pem --key  ./certs/long-term.private.key --cert ./certs/long-term.cert.pem --topic test/topic')

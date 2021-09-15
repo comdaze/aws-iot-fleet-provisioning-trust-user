@@ -29,16 +29,14 @@ keycloak_openid = KeycloakOpenID(
 # Get WellKnow
 #config_well_know = keycloak_openid.well_know()
 
-token = keycloak_openid.token("sean", "kyjdzbh1!")
+token = keycloak_openid.token("user1", "Amazon@2021")
 
 access_token=token['access_token']
 
 IdentityPoolId =  'cn-north-1:f815bc17-e94c-47df-953b-840c67c27eb4'
 AccountId ='456370280007'
 cognito_identity_client = boto3.client('cognito-identity',config=aws_config)
-#    aws_access_key_id=ACCESS_KEY,
-#    aws_secret_access_key=SECRET_KEY,
-#    aws_session_token=SESSION_TOKEN
+
 
 IdentityId_response = cognito_identity_client.get_id(
     AccountId=AccountId,
