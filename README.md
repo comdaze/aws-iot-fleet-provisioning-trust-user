@@ -256,3 +256,5 @@ Disconnecting...
 Disconnected!
 
 ```
+
+程序详细运行流程可以参考[notebook](/notebook/fleet_provisioning.ipynb)。
