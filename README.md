@@ -1,7 +1,13 @@
-# aws-iot-fleet-provisioning-trust-user
-## WiFi 配网
+# AWS IoT基于可信用户的设备队列预置
+## 设备端WiFi配网
+新设备开箱通电后，用手机搜索到新设备的SoftAP，然后在APP中填入无线路由器的SSID 和 wifi密码信息传入设备，确认后设备重启，连接无线路由器的wifi ssid，完成配网，流程示意图如下：
+
+![wifi_smartconfig](/pics/wifi_smartconfig.png "wifi_smartconfig")
+采用树莓派Raspberry Pi 3B+,下载RaspiWiFi程序，并且初始化安装
 ```
-$ cd RaspiWiFi
+$ git clone https://github.com/comdaze/aws-iot-fleet-provisioning-trust-user.git
+
+$ cd aws-iot-fleet-provisioning-trust-user/RaspiWiFi
 $ sudo python3 initial_setup.py
 
 
@@ -75,7 +81,7 @@ Would you like to do that now? [y/N]: y
 
 ![WiFI_Setup_3](/pics/WiFi_Setup_3.jpeg "WiFI_Setup_3")
 
-此时看到树莓派已经连接了刚才设置好的可以连接internet的WiFi热点
+此时看到树莓派已经连接了刚才设置好的可以连接internet的WiFi热点.
 
 ## 基于可信用户的IoT设备注册
 AWS提供了几种不同的方式来配置设备并在上面安装证书。可以参看[白皮书](https://d1.awsstatic.com/whitepapers/device-manufacturing-provisioning.pdf)这篇中得到了详细描述。
