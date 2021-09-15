@@ -3,6 +3,7 @@
 新设备开箱通电后，用手机搜索到新设备的SoftAP，然后在APP中填入无线路由器的SSID 和 wifi密码信息传入设备，确认后设备重启，连接无线路由器的wifi ssid，完成配网，流程示意图如下：
 
 ![wifi_smartconfig](/pics/wifi_smartconfig.png "wifi_smartconfig")
+
 采用树莓派Raspberry Pi 3B+,下载RaspiWiFi程序，并且初始化安装
 ```
 $ git clone https://github.com/comdaze/aws-iot-fleet-provisioning-trust-user.git
