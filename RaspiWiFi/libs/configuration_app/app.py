@@ -4,18 +4,51 @@ import os
 import time
 from threading import Thread
 import fileinput
+import os
+import uuid
+import platform
+from flask import Flask,request,redirect,url_for
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 app.debug = True
 
+ 
+if platform.system() == "Windows":
+ slash = '\\'
+else:
+ platform.system()=="Linux"
+ slash = '/'
+UPLOAD_FOLDER = 'upload'
+ALLOW_EXTENSIONS = set(['pem', 'key'])
 
-@app.route('/')
-def index():
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+if not os.path.exists(UPLOAD_FOLDER):
+ os.makedirs(UPLOAD_FOLDER)
+else:
+ pass
+def allowed_file(filename):
+ return '.' in filename and \
+   filename.rsplit('.', 1)[1] in ALLOW_EXTENSIONS
+ 
+
+
+@app.route('/', methods=['GET','POST'])
+def upload_file():
     wifi_ap_array = scan_wifi_networks()
     config_hash = config_file_hash()
+    if request.method =='POST':
+        file = request.files['file']
+        if file and allowed_file(file.filename):
+            file_name = file.filename
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'],file_name))
+            base_path = os.getcwd()
+            file_path = base_path + slash + app.config['UPLOAD_FOLDER'] + slash + file_name
+            print(file_path)
+            return redirect(url_for('upload_file',filename = file_name))  
 
     return render_template('app.html', wifi_ap_array = wifi_ap_array, config_hash = config_hash)
-
+    
 
 @app.route('/manual_ssid_entry')
 def manual_ssid_entry():
