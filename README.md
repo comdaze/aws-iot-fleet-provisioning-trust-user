@@ -70,7 +70,11 @@ Would you like to do that now? [y/N]: y
 
 ![Router_IP](/pics/Router_IP.jpeg "Router_IP")
 
-打开手机浏览器输入：http://10.0.0.1 ,可以看到WiFi Setup设置界面
+打开手机浏览器输入：http://10.0.0.1，可以看到“Upload Temparary Certificate File”，点击选取文件，选择刚刚获得临时证书文件，进行上传到树莓派设备。
+
+![upload_certs_file](/pics/upload_certs_file.png "upload_certs_file")
+
+还可以看到WiFi Setup设置界面
 
 ![WiFI_Setup_1](/pics/WiFi_Setup_1.jpeg "WiFI_Setup_1")
 
