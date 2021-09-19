@@ -21,7 +21,7 @@ keycloak_openid = KeycloakOpenID(
                     server_url="https://keycloak.aws.comdaze.com/auth/",
                     client_id="iotfleetclient",
                     realm_name="iotfleet",
-                    client_secret_key="2742bc8a-9ce3-451f-83d0-e014d12442bf"
+                    client_secret_key="2742bc8a-9ce3-451f-83d0-e014d1123456"
 )
 
 
@@ -29,12 +29,12 @@ keycloak_openid = KeycloakOpenID(
 # Get WellKnow
 #config_well_know = keycloak_openid.well_know()
 
-token = keycloak_openid.token("user1", "Amazon@2021")
+token = keycloak_openid.token("user", "Password")
 
 access_token=token['access_token']
 
-IdentityPoolId =  'cn-north-1:f815bc17-e94c-47df-953b-840c67c27eb4'
-AccountId ='456370280007'
+IdentityPoolId =  'cn-north-1:f815bc17-e94c-47df-953b-840c67123456'
+AccountId ='123456xxxxxx'
 cognito_identity_client = boto3.client('cognito-identity',config=aws_config)
 
 
