@@ -1,109 +1,44 @@
 # AWS IoT基于可信用户的设备队列预置
-## 设备端WiFi配网
-新设备开箱通电后，用手机搜索到新设备的SoftAP，然后在APP中填入无线路由器的SSID 和 wifi密码信息传入设备，确认后设备重启，连接无线路由器的wifi ssid，完成配网，流程示意图如下：
 
-![wifi_smartconfig](/pics/wifi_smartconfig.png "wifi_smartconfig")
-
-采用树莓派Raspberry Pi 3B+,下载RaspiWiFi程序，并且初始化安装
-```
-$ git clone https://github.com/comdaze/aws-iot-fleet-provisioning-trust-user.git
-
-$ cd aws-iot-fleet-provisioning-trust-user/RaspiWiFi
-$ sudo python3 initial_setup.py
-
-
-###################################
-##### RaspiWiFi Intial Setup  #####
-###################################
-
-
-Would you like to specify an SSID you'd like to use 
-for Host/Configuration mode? [default: RaspiWiFi Setup]: 
-
-
-Would you like WPA encryption enabled on the hotspot 
-while in Configuration Mode? [y/N]:y
-
-What password would you like to for WPA hotspot 
-access (if enabled above, 
-Must be at least 8 characters) [default: NO PASSWORD]:0123456789
-
-Would you like to enable 
-auto-reconfiguration mode [y/N]?: y
-
-How long of a delay would you like without an active connection 
-before auto-reconfiguration triggers (seconds)? [default: 300]: 
-
-Which port would you like to use for the Configuration Page? [default: 80]: 
-
-Would you like to enable SSL during configuration mode 
-(NOTICE: you will get a certificate ID error 
-when connecting, but traffic will be encrypted) [y/N]?: N
-
-
-Are you ready to commit changes to the system? [y/N]: y
-
-Hit:1 http://archive.raspberrypi.org/debian buster InRelease
-Hit:2 http://raspbian.raspberrypi.org/raspbian buster InRelease
-Reading package lists... Done
-Building dependency tree       
-Reading state information... 0%
-
-Installing Flask web server...
-
-#####################################
-##### RaspiWiFi Setup Complete  #####
-#####################################
-
-
-Initial setup is complete. A reboot is required to start in WiFi configuration mode...
-Would you like to do that now? [y/N]: y
-
-```
-此时机器自动重启
-
-打开手机无线局域网设置，可以看到“RaspiWiFi Setup”热点：
-
-![WiFi HotPoint](/pics/Hotpoint.jpeg "WiFi HotPoint")
-
-查看热点路由器的IP地址：
-
-![Router_IP](/pics/Router_IP.jpeg "Router_IP")
-
-打开手机浏览器输入：http://10.0.0.1，可以看到“Upload Temparary Certificate File”，点击选取文件，选择刚刚获得临时证书文件，进行上传到树莓派设备。
-
-![upload_certs_file](/pics/upload_certs_file.png "upload_certs_file")
-
-还可以看到WiFi Setup设置界面
-
-![WiFI_Setup_1](/pics/WiFi_Setup_1.jpeg "WiFI_Setup_1")
-
-选择可以连接Internet的WiFi热点：
-
-![WiFI_Setup_2](/pics/WiFi_Setup_2.jpeg "WiFI_Setup_2")
-
-输入密码，点击提交，此时已经给树莓派设置好了WiFi，树莓派会自动重启
-
-![WiFI_Setup_3](/pics/WiFi_Setup_3.jpeg "WiFI_Setup_3")
-
-此时看到树莓派已经连接了刚才设置好的可以连接internet的WiFi热点.
-
-## 基于可信用户的IoT设备注册
+## 需求背景和流程介绍
 AWS提供了几种不同的方式来配置设备并在上面安装证书。可以参看[白皮书](https://d1.awsstatic.com/whitepapers/device-manufacturing-provisioning.pdf)这篇中得到了详细描述。
 
 本项目重点讨论 "由受信任的用户队列预置 "这一选项。当需要高度的安全性时，当制造供应链不被信任时，或者由于技术限制、成本或应用的具体限制，不可能在制造供应链中配置设备时，建议采用 "受信任用户的队列预置"的方式。使用这种方法，凭证永远不会暴露在制造供应链中。请阅读[这里](https://docs.aws.amazon.com/iot/latest/developerguide/provision-wo-cert.html)了解更多细节。
 ### 基本流程
-安装者使用他编写和拥有的移动/Web应用，并与AWS进行认证。使用受信任的（认证的）用户API，安装者收到一个临时的X.509证书和私钥，有效期为5分钟。使用移动/网络应用，证书被传递给设备。设备连接到AWS IoT，并将临时凭证换成由AWS CA签署的唯一X.509证书和私钥。在这个工作流程中，AWS资源包括Thing名称、策略和证书都在AWS账户中设置。
+- 用户使用他编写和拥有的手机应用，使用受信任的（认证的）用户登录，并与AWS进行认证，手机应用收到一个临时的X.509证书和私钥，有效期为5分钟。
+- 新设备首次开机启动SoftAP，用户手机连接设备SoftAP，一方面手机应用给设备传递能够连接Internet的Wi-Fi设置信息，另一方面从手机应用将临时证书被传递给设备。
+- 设备连接到AWS IoT，并将临时凭证换成由AWS CA签署的唯一X.509证书和私钥，同时设备在AWS IoT注册。
+- 在这个工作流程中，AWS IoT资源包括设备名称、策略和证书都在AWS账户中设置。
+以下为流程示意图：
+
+![iot-fleet-provisioning-trust-user-flow](./pics/iot-fleet-provisioning-trust-user-flow.png "iot-fleet-provisioning-trust-user-flow")
+
+关于临时证书和永久证书交换的详细流程参看如下示意图：
 
 ![fp_by_trasted_user_flow](./pics/fp_by_trasted_user_flow.png "fp_by_trasted_user_flow")
-### 用户认证系统部署
-移动或者Web应用的用户认证可以采用Amazon Cognito User Pool或者其他认证服务，在这里我们采用开源用户认证系统[Keycloak](https://www.keycloak.org/),在AWS云上自动化部署请参考[Keycloak-on-AWS](https://github.com/aws-samples/keycloak-on-aws)。
 
-移动/Web用户通过Keycloak认证登录后拿到Access Token，通过和Amazon Cognito Identity Pools集成，获得AWS的服务访问凭证Access Key和Securt Key，过程示意图如下：
+## 前提条件和准备
+部署本方案，前提需要准备手机端用户的统一身份认证系统，手机端用户认证通常采用OpenID Connect等认证体系；另外AWS IoT云上资源如：IoT策略，预置模版，设备名称，类型和分组等都需要预先设定好。
+### 用户认证系统
+手机端应用的用户认证可以采用Amazon Cognito User Pool或者其他认证服务，在这里我们采用开源用户认证系统[Keycloak](https://www.keycloak.org/),在AWS云上自动化部署请参考[Keycloak-on-AWS](https://github.com/aws-samples/keycloak-on-aws)。
+
+移动用户通过Keycloak认证登录后拿到Access Token，通过和Amazon Cognito Identity Pools集成，实现和AWS IAM的Web联合身份认证，获得AWS的服务访问凭证Access Key和Securt Key，过程示意图如下：
 
 ![amazon-cognito-ext-auth-enhanced-flow](./pics/amazon-cognito-ext-auth-enhanced-flow.png "amazon-cognito-ext-auth-enhanced-flow")
 
 Keycloak和Amazon Cognito Identity Pools集成配置请参见[部署向导](https://github.com/aws-samples/keycloak-on-aws/blob/master/doc/DEPLOYMENT_GUIDE.md)最后一部分。
+其中关键有一个关键步骤，确保创建的Amazon Cognito Identity Pool的‘经过身份验证的角色’，附加如下策略，该角色能够通过IoT预置模版申请临时证书。
+```
+{
+    "Effect": "Allow",
+    "Action": [
+        "iot:CreateProvisioningClaim",
+    ],
+    "Resource": [
+        "arn:aws:us-east-1:account:provisioningtemplate/TrustedUserProvisioningTemplate"
+    ]
+}
+```
 
 ### AWS IoT策略
 IoT策略包括允许设备连接到AWS物联网核心消息代理，发送和接收MQTT消息，以及获取或更新设备的影子的操作。策略被附加到一个定义设备身份的证书上。当设备连接时，AWS IoT使用证书来查找附加的策略和它所持有的授权规则。
@@ -194,33 +129,122 @@ aws iot create-provisioning-template \
         --template-body file://template.json \
         --enabled 
 ```
-### 移动端应用获得临时预置Claim证书
-使用受信任的用户，如终端用户或拥有已知账户的安装人员，可以简化设备制造过程。设备没有唯一的客户证书，而是有一个临时证书，使设备能够连接到AWS IoT，时间只有5分钟。在这5分钟的窗口期间，受信任的用户获得一个具有较长寿命的唯一客户证书，并将其安装在设备上。Claim证书的有限寿命最大限度地减少了证书受损的风险。欲了解更多信息，请参阅由受信任用户提供。
-确保创建的Amazon Cognito Identity Pool的‘经过身份验证的角色’，附加了如下策略：
-```
-{
-    "Effect": "Allow",
-    "Action": [
-        "iot:CreateProvisioningClaim",
-    ],
-    "Resource": [
-        "arn:aws:us-east-1:account:provisioningtemplate/TrustedUserProvisioningTemplate"
-    ]
-}
-```
+## 手机端应用执行步骤
+
+### 手机端应用获得临时证书
+用户在手机端通过身份认证系统注册并且登录，利用身份认证系统和AWS IAM联合身份认证，最终获取IoT临时证书，准备发送给设备端。
+本项目手机端应用采用Python语言开发，需要Python3运行环境和相关依赖包。
+
 安装python依赖模块
 ```
 $ pip install requests==2.25.1 
-$ pip installurllib3==1.26.5 
+$ pip install urllib3==1.26.5 
 $ pip install python-keycloak
 ```
-获取临时证书，保存在手机上
+执行手机端应用程序
 ```
-python mobile_claim.py
+$ git clone https://github.com/comdaze/aws-iot-fleet-provisioning-trust-user.git
+$ cd aws-iot-fleet-provisioning-trust-user
+$ python mobile_claim.py
 ```
-证书保存在./certs目录下，将私有密钥和证书发送到设备端。
-### 设备端执行  
+证书保存在./certs目录下，准备将私有密钥和证书发送到设备端。
+
+### 手机端连接设备SoftAP对设备WiFi配网和发送临时证书
+
+打开手机无线局域网设置，可以看到本项目采用树莓派设备初始化后建立的“RaspiWiFi Setup”热点：
+
+![WiFi HotPoint](/pics/Hotpoint.jpeg "WiFi HotPoint")
+
+查看热点路由器的IP地址：
+
+![Router_IP](/pics/Router_IP.jpeg "Router_IP")
+
+打开手机浏览器输入：http://10.0.0.1，可以看到“Upload Temparary Certificate File”，点击选取文件，选择刚刚获得临时证书文件，进行上传到树莓派设备。
+
+![upload_certs_file](/pics/upload_certs_file.png "upload_certs_file")
+
+还可以看到WiFi Setup设置界面
+
+![WiFI_Setup_1](/pics/WiFi_Setup_1.jpeg "WiFI_Setup_1")
+
+选择可以连接Internet的WiFi热点：
+
+![WiFI_Setup_2](/pics/WiFi_Setup_2.jpeg "WiFI_Setup_2")
+
+输入密码，点击提交，此时已经给树莓派设置好了WiFi，树莓派会自动重启
+
+![WiFI_Setup_3](/pics/WiFi_Setup_3.jpeg "WiFI_Setup_3")
+
+此时看到树莓派已经连接了刚才设置好的可以连接internet的WiFi热点.
+
+## 设备端应用执行步骤
+### 设备端WiFi配网
+首先了解下WiFi配网，流程示意图如下：
+
+![wifi_smartconfig](/pics/wifi_smartconfig.png "wifi_smartconfig")
+
+本项目采用树莓派Raspberry Pi 3B+,利用RaspiWiFi程序，实现SoftAP和WiFi设定，首先进行RaspiWiFi初始化安装
+```
+$ git clone https://github.com/comdaze/aws-iot-fleet-provisioning-trust-user.git
+$ cd aws-iot-fleet-provisioning-trust-user/RaspiWiFi
+$ sudo python3 initial_setup.py
+
+
+###################################
+##### RaspiWiFi Intial Setup  #####
+###################################
+
+
+Would you like to specify an SSID you'd like to use 
+for Host/Configuration mode? [default: RaspiWiFi Setup]: 
+
+
+Would you like WPA encryption enabled on the hotspot 
+while in Configuration Mode? [y/N]:y
+
+What password would you like to for WPA hotspot 
+access (if enabled above, 
+Must be at least 8 characters) [default: NO PASSWORD]:0123456789
+
+Would you like to enable 
+auto-reconfiguration mode [y/N]?: y
+
+How long of a delay would you like without an active connection 
+before auto-reconfiguration triggers (seconds)? [default: 300]: 
+
+Which port would you like to use for the Configuration Page? [default: 80]: 
+
+Would you like to enable SSL during configuration mode 
+(NOTICE: you will get a certificate ID error 
+when connecting, but traffic will be encrypted) [y/N]?: N
+
+
+Are you ready to commit changes to the system? [y/N]: y
+
+Hit:1 http://archive.raspberrypi.org/debian buster InRelease
+Hit:2 http://raspbian.raspberrypi.org/raspbian buster InRelease
+Reading package lists... Done
+Building dependency tree       
+Reading state information... 0%
+
+Installing Flask web server...
+
+#####################################
+##### RaspiWiFi Setup Complete  #####
+#####################################
+
+
+Initial setup is complete. A reboot is required to start in WiFi configuration mode...
+Would you like to do that now? [y/N]: y
+
+```
+此时树莓派设备自动重启，重启后SoftAP建立，等待手机端连接和接收临时证书。
+
+### 设备端获取永久证书
+设备收到手机端传送的WiF设置信息，已经成功连接到互联网，同时设备端接收到手机端传送的临时证书，此时设备端可以执行如下程序向AWS IoT申请永久证书：  
 ```     
+$ git clone https://github.com/comdaze/aws-iot-fleet-provisioning-trust-user.git
+$ cd aws-iot-fleet-provisioning-trust-user/RaspiWiFi
 $ python3 fleetprovisioning.py \
         --endpoint a2jtec7plm36gl.ats.iot.cn-north-1.amazonaws.com.cn \
         --root-ca ./certs/root.ca.pem \
@@ -228,7 +252,9 @@ $ python3 fleetprovisioning.py \
         --key ./certs/provision.private.key \
         --templateName TrustedUserProvisioningTemplate \
         --templateParameters "{\"SerialNumber\":\"1\",\"DeviceLocation\":\"Seattle\"}"
-
+``` 
+验证设备端采用上一步申请的永久证书，向IoT Core发送消息，并订阅消息。
+``` 
 $ python3 pubsub.py --endpoint a2jtec7plm36gl.ats.iot.cn-north-1.amazonaws.com.cn --root-ca ./certs/root.ca.pem --key  ./certs/long-term.private.key --cert ./certs/long-term.cert.pem --topic test/topic
 
 Connecting to a2jtec7plm36gl.ats.iot.cn-north-1.amazonaws.com.cn with client ID 'test-43340e64-4ddf-4331-a09b-37fe844353c7'...
