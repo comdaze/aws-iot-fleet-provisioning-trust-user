@@ -1,9 +1,12 @@
 # AWS IoT基于可信用户的设备队列预置
 
 ## 需求背景和流程介绍
-AWS提供了几种不同的方式来配置设备并在上面安装证书。可以参看[白皮书](https://d1.awsstatic.com/whitepapers/device-manufacturing-provisioning.pdf)这篇中得到了详细描述。
 
-本项目重点讨论 "由受信任的用户队列预置 "这一选项。当需要高度的安全性时，当制造供应链不被信任时，或者由于技术限制、成本或应用的具体限制，不可能在制造供应链中配置设备时，建议采用 "受信任用户的队列预置"的方式。使用这种方法，凭证永远不会暴露在制造供应链中。请阅读[这里](https://docs.aws.amazon.com/iot/latest/developerguide/provision-wo-cert.html)了解更多细节。
+当最终用户需要高度的安全性时，当制造商和供应链不被信任时，或者由于技术限制、成本或应用的具体限制，不可能在制造端或者供应链中预置设备时，建议采用 "可信用户的队列预置"方案。使用这个方案，设备的连接凭证永远不会暴露在制造端和供应链环节中。AWS IoT Core提供了可信用户队列预置的API接口，本方案提供端到端的完整的方案，方便客户快速实现可信用户批量预置。
+本方案面向To C的智能设备提供商，如智能家居/可穿戴设备/智能汽车等场景，还适用于拥有智能工厂的最终商业客户和其他需要批量注册设备和网关的客户。
+
+请阅读[这里](https://docs.aws.amazon.com/iot/latest/developerguide/provision-wo-cert.html)了解更多细节。AWS提供了几种不同的方式来配置设备并在上面安装证书，可以参看[白皮书](https://d1.awsstatic.com/whitepapers/device-manufacturing-provisioning.pdf)，得到了详细描述。
+
 ### 基本流程
 - 用户使用他编写和拥有的手机应用，使用受信任的（认证的）用户登录，并与AWS进行认证，手机应用收到一个临时的X.509证书和私钥，有效期为5分钟。
 - 新设备首次开机启动SoftAP，用户手机连接设备SoftAP，一方面手机应用给设备传递能够连接Internet的Wi-Fi设置信息，另一方面从手机应用将临时证书被传递给设备。
@@ -245,7 +248,7 @@ Would you like to do that now? [y/N]: y
 ```     
 $ git clone https://github.com/comdaze/aws-iot-fleet-provisioning-trust-user.git
 $ cd aws-iot-fleet-provisioning-trust-user
-$ python3 fleetprovisioning.py \
+$ python3 device_fleet_provisioning.py \
         --endpoint a2jtec7plm36gl.ats.iot.cn-north-1.amazonaws.com.cn \
         --root-ca ./certs/root.ca.pem \
         --cert ./certs/provision.cert.pem \
