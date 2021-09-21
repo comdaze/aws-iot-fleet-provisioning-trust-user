@@ -244,7 +244,7 @@ Would you like to do that now? [y/N]: y
 设备收到手机端传送的WiF设置信息，已经成功连接到互联网，同时设备端接收到手机端传送的临时证书，此时设备端可以执行如下程序向AWS IoT申请永久证书：  
 ```     
 $ git clone https://github.com/comdaze/aws-iot-fleet-provisioning-trust-user.git
-$ cd aws-iot-fleet-provisioning-trust-user/RaspiWiFi
+$ cd aws-iot-fleet-provisioning-trust-user
 $ python3 fleetprovisioning.py \
         --endpoint a2jtec7plm36gl.ats.iot.cn-north-1.amazonaws.com.cn \
         --root-ca ./certs/root.ca.pem \
