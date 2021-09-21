@@ -251,7 +251,7 @@ $ python3 fleetprovisioning.py \
         --cert ./certs/provision.cert.pem \
         --key ./certs/provision.private.key \
         --templateName TrustedUserProvisioningTemplate \
-        --templateParameters "{\"SerialNumber\":\"1\",\"DeviceLocation\":\"Seattle\"}"
+        --templateParameters "{\"SerialNumber\":\"1\",\"DeviceLocation\":\"Beijing\"}"
 ``` 
 验证设备端采用上一步申请的永久证书，向IoT Core发送消息，并订阅消息。
 ``` 
