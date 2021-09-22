@@ -55,7 +55,7 @@ IoT策略包括允许设备连接到AWS物联网核心消息代理，发送和�
 
 第二个永久证书，我们需要手动创建永久证书的IoT策略，这个策略被配置模板引用，并在工作流过程中附加到永久证书上。下面的策略允许设备连接、发布和订阅MQTT消息。
 
-创建新的IoT策略，将其命名为 "pubsub"，并为该策略设置以下内容。用你的账户ID替换'account'。
+针对一般的设备，可以创建如下IoT策略，将其命名为 "pubsub"，并为该策略设置以下内容。用你的账户ID替换'account'。
 ```
 {
   "Version": "2012-10-17",
@@ -86,6 +86,48 @@ IoT策略包括允许设备连接到AWS物联网核心消息代理，发送和�
       ],
       "Resource": [
         "arn:aws-cn:iot:cn-north-1:account:client/test*"
+      ]
+    }
+  ]
+}
+```
+
+针对Greengrass设备，需要创建如下策略，命名为'greengrass_policy':
+
+```
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "iot:Publish",
+        "iot:Subscribe",
+        "iot:Connect",
+        "iot:Receive"
+      ],
+      "Resource": [
+        "*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "iot:GetThingShadow",
+        "iot:UpdateThingShadow",
+        "iot:DeleteThingShadow"
+      ],
+      "Resource": [
+        "*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "greengrass:*"
+      ],
+      "Resource": [
+        "*"
       ]
     }
   ]
