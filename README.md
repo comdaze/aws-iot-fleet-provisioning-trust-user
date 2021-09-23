@@ -293,13 +293,23 @@ Would you like to do that now? [y/N]: y
 ```     
 $ git clone https://github.com/comdaze/aws-iot-fleet-provisioning-trust-user.git
 $ cd aws-iot-fleet-provisioning-trust-user
-$ python3 device_fleet_provisioning.py \
-        --endpoint a2jtec7plm36gl.ats.iot.cn-north-1.amazonaws.com.cn \
-        --root-ca ./certs/root.ca.pem \
-        --cert ./certs/provision.cert.pem \
-        --key ./certs/provision.private.key \
-        --templateName TrustedUserProvisioningTemplate \
-        --templateParameters "{\"SerialNumber\":\"1\",\"DeviceLocation\":\"Beijing\"}"
+# 程序中设定如下参数
+fleet_provisioning(
+    endpoint = 'a2jtec7plm36gl.ats.iot.cn-north-1.amazonaws.com.cn',
+    root_ca =  './certs/root.ca.pem',
+    cert =  './certs/provision.cert.pem',
+    key =  './certs/provision.private.key',
+    templateName =  'TrustedUserProvisioningTemplate',
+    templateParameters= "{\"SerialNumber\":\"1\",\"DeviceLocation\":\"Seattle\"}",
+    client_id = "test-" + str(uuid4()),
+    use_websocket = False,
+    signing_region  = 'cn-north-1',
+    proxy_host = None,
+    proxy_port = None,
+    csr = None,
+    verbosity = io.LogLevel.NoLogs.name
+)
+$ python3 device_fleet_provisioning.py
 ``` 
 验证设备端采用上一步申请的永久证书，向IoT Core发送消息，并订阅消息。
 ``` 
